@@ -1,0 +1,60 @@
+.titulo{
+    background-color: #2DE440;
+    text-align: center;
+    color: white;
+    padding: 50px 0;
+    margin-bottom: 3%;
+    margin-top: 3%;
+    font-weight: bold;
+    
+}
+
+h1{
+    font-size: 400%;
+}
+
+.contenido{
+    margin-left: 20%;
+    margin-right: 20%;
+    height: 100%;
+    position: relative;
+    
+}
+
+.form-group{
+    background-color: #FFFFFF;
+    color: black;
+    text-align: center; 
+    padding-left: 20%;
+    padding-right: 20%;
+    padding-top: 10%;
+    padding-bottom: 8%;
+    
+}
+
+.navbar-dark {
+  background: #00A86B ;
+}
+
+.navbar-element{
+    color: white;
+}
+
+form{
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+body{
+    background-color: #038148;
+    height: 100%;
+}
+
+
+td{
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-bottom: 5%;
+}
+
