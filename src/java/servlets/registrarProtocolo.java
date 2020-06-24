@@ -2,11 +2,7 @@ package servlets;
 
 import java.io.*;
 import java.util.*;
-import java.lang.*;
 import java.util.Properties;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.ResultSet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,13 +19,10 @@ import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.PasswordAuthentication;
 import javax.mail.internet.MimeMessage;
-import org.apache.catalina.tribes.util.Arrays;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import javax.servlet.http.HttpSession;
-import javax.swing.JOptionPane;
-import org.apache.commons.fileupload.FileUploadException;
 
 public class registrarProtocolo extends HttpServlet {
 
