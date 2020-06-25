@@ -379,22 +379,60 @@ if ((select count(*) from sinodal_protocolo where id_profesor = idprof) < 3) the
 	if((select count(*) from sinodal_protocolo where num_registro = nreg) < 3) then -- Si hay menos de 3 sinodales en el protocolo
 		if((select count(*) from sinodal_protocolo where id_profesor = idprof and num_registro = nreg) < 1) then -- Si el profesor no ha sido asignado a ese protocolo
 			insert into sinodal_protocolo(id_profesor,num_registro)values(idprof,nreg);
-            set msj = 'Profesor asignado como sinodal';
+            set msj = 'Asignado';
 		else
-			set msj = 'Profesor ya asignado como sinodal';
+			set msj = 'c1'; -- Profesor ya asignado a ese protocolo
 		end if;
     else
-		set msj = 'El protocolo ya cuenta con 3 sinodales';
+		set msj = 'c2'; -- Protocolo ya con 3 sinodales
 	end if;
 else
-	set msj = 'Profesor ya asignado a 3 protocolos';
+	set msj = 'c3'; -- Profesor ya con 3 protocolos
 end if;
 	select msj;
 end **
 delimiter ; 
 
+delimiter **
+create procedure rol_profesor(in idprof varchar (10))
+begin
+	select rol from profesor where id_profesor = idprof;
+end **
+delimiter ; 
 
+delimiter **
+create procedure profesores_academia(in idAcademia varchar (10))
+begin
+	select p.id_profesor,p.nombre from profesor p inner join profesor_academia pa on p.id_profesor = pa.id_profesor inner join academia a on a.id_academia = pa.id_academia where a.id_academia = idAcademia;
+end **
+delimiter ; 
 
+delimiter **
+create procedure academia_profesor(in idProfesor varchar (10))
+begin
+	select a.id_academia,a.nombre from academia a inner join profesor_academia pa on a.id_academia = pa.id_academia inner join profesor p on p.id_profesor = pa.id_profesor where p.id_profesor = idProfesor;
+end **
+delimiter ; 
+
+delimiter **
+create procedure sinodales_protocolo(in nreg varchar(10))
+begin
+	select p.id_profesor,p.nombre from profesor p inner join sinodal_protocolo sp on p.id_profesor = sp.id_profesor where sp.num_registro = nreg;
+end **
+delimiter ; 
+
+delimiter **
+create procedure existe_protocolo(in nreg varchar(10))
+begin
+	declare msj varchar(30);
+	if ((select count(*) from protocolo where num_registro = nreg)>0) then
+		set msj = "Existente";
+    else
+		set msj = "Inexistente";
+    end if;
+    select msj;
+end **
+delimiter ; 
 
 -- PARA PRUEBAS
 
@@ -404,18 +442,33 @@ call iniciar_sesion('faronien','asdf');
 call registrar_alumno('faronien','asdf','2015090373','marcos','faronienm@gmail.com');
 insert into protocolo(num_registro,nombre,dir_pdf,boleta,ult_revision)values('PROTTT0001','PROTTT0001','docs/protocolos/pr1.pdf','2015090373','2020-02-24');
 
+insert into academia(id_academia,nombre)values(1,"Ciencias Básicas");
+insert into academia(id_academia,nombre)values(2,"Ciencias Sociales");
+insert into academia(id_academia,nombre)values(3,"Ingenieria");
+
 insert into usuario(usuario,pswd,tipo)values('prof1','prof1',2);
-insert into profesor(id_profesor,usuario,nombre)values(1,'prof1','Hernan Martinez');
+insert into profesor(id_profesor,usuario,nombre,rol)values(1,'prof1','Hernan Martinez','presidente');
+insert into profesor_academia(id_academia,id_profesor)values('1','1');
 
 insert into usuario(usuario,pswd,tipo)values('prof2','prof2',2);
 insert into profesor(id_profesor,usuario,nombre)values(2,'prof2','Juan Perez');
+insert into profesor_academia(id_academia,id_profesor)values('2','2');
 
 insert into usuario(usuario,pswd,tipo)values('prof3','prof3',2);
-insert into profesor(id_profesor,usuario,nombre)values(3,'prof3','Adriana Hernandez');
+insert into profesor(id_profesor,usuario,nombre)values('3','prof3','Adriana Hernandez');
+insert into profesor_academia(id_academia,id_profesor)values('3','3');
 
-call asignar_sinodal(1,'PROTTT0001');
-call asignar_sinodal(2,'PROTTT0001');
-call asignar_sinodal(3,'PROTTT0001');
+insert into usuario(usuario,pswd,tipo)values('prof4','prof4',2);
+insert into profesor(id_profesor,usuario,nombre)values('4','prof4','Edgar Carranza');
+insert into profesor_academia(id_academia,id_profesor)values('1','4');
+
+insert into usuario(usuario,pswd,tipo)values('prof5','prof5',2);
+insert into profesor(id_profesor,usuario,nombre)values('5','prof5','César Frias');
+insert into profesor_academia(id_academia,id_profesor)values('1','5');
+
+call asignar_sinodal('1','PROTTT0001');
+call asignar_sinodal('2','PROTTT0001');
+call asignar_sinodal('3','PROTTT0001');
 
 insert into evaluacion(id_evaluacion,id_profesor,num_registro,estatus,dir_pdf)values(1,1,'PROTTT0001','ACEPTADA','docs/evaluaciones/ev1.pdf');
 insert into evaluacion(id_evaluacion,id_profesor,num_registro,estatus,dir_pdf)values(2,2,'PROTTT0001','ACEPTADA','docs/evaluaciones/ev2.pdf');

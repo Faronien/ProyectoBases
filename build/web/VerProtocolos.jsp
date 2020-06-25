@@ -1,8 +1,3 @@
-<%-- 
-    Document   : VerProtocolos
-    Created on : 17/02/2020, 07:05:39 PM
-    Author     : USUARIO
---%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="clases.AccesoDatos"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -34,6 +29,10 @@
                     else{
                         response.sendRedirect("InicioSesion.jsp");
                     }
+                    AccesoDatos ad = new AccesoDatos();
+                    String procedimiento;
+                    ResultSet rs;
+                    ad.obtenerConexion();
         %>
         <nav class="navbar navbar-dark ">
             <div class="containers-fluid">
@@ -59,15 +58,13 @@
                 <% if(tipo==1){ %>    
                     
                     <% 
-                        String procedimiento = "call ver_protocolos('"+usuario+"')";
+                        procedimiento = "call ver_protocolos('"+usuario+"')";
                         System.out.println(usuario);
-                        String profesores = "";
                         String ligaProtocolo = "";
                         String nombreProtocolo = "";
                         boolean hayAlgo = false;
-                        AccesoDatos ad = new AccesoDatos();
-                        ad.obtenerConexion();
-                        ResultSet rs = ad.llamarProcedimiento(procedimiento);
+                        
+                        rs = ad.llamarProcedimiento(procedimiento);
 
                         while(rs.next()){
                             System.out.println("URL:" + ligaProtocolo);
@@ -86,24 +83,37 @@
                     <%}%>
                 <% }else %>
 
-                <% if(tipo==2){ %>
-                
+                <% if(tipo==2){
+                    procedimiento = "call getidProf('"+usuario+"')";
+                    rs = ad.llamarProcedimiento(procedimiento);
+                    int idProfesor = 0;
+                    if(rs.next()){
+                        idProfesor = rs.getInt("id_profesor");
+                    }
+                    procedimiento = "call rol_profesor("+idProfesor+")";
+                    rs = ad.llamarProcedimiento(procedimiento);
+                    String rolProfesor = "";
+                    if(rs.next()){
+                        rolProfesor = rs.getString("rol");
+                    }
+                    %>
                 <form name="elegirProt" id="elegirProt" method="get" action="RegistroEvaluacion.jsp">
                     <table  class="table">
                         <thead>
                             <tr>
-                                <th scope="col"></th>
+                                <th scope="col">Evaluar</th>
                                 <th scope="col">Numero Registro</th>
                                 <th scope="col">Alumno</th>
                                 <th scope="col">Protocolo</th>
+                                <%if(rolProfesor.equals("presidente")){%>
+                                <th scope="col">Acci&oacute;n</th>
+                                <%}%>
                             </tr>
                         </thead>
                         <tbody>
                             <%
-                                String procedimiento = "call ver_protocolos('" + usuario + "')";
-                                AccesoDatos ad = new AccesoDatos();
-                                ad.obtenerConexion();
-                                ResultSet rs = ad.llamarProcedimiento(procedimiento);
+                                procedimiento = "call ver_protocolos('" + usuario + "')";
+                                rs = ad.llamarProcedimiento(procedimiento);
                                 while (rs.next()) {
                             %>
                             <tr>
@@ -111,20 +121,20 @@
                                 <td><%=rs.getString("protocolo.num_registro")%></td>
                                 <td><%=rs.getString("alumno.nombre")%></td>
                                 <td><a href='<%=rs.getString("protocolo.dir_pdf")%>'><%=rs.getString("protocolo.nombre")%></a></td>
+                                <%if(rolProfesor.equals("presidente")){%>
+                                <td><a href='Sinodales.jsp?nreg=<%=rs.getString("protocolo.num_registro")%>'>Ver Sinodales</td>
+                                <%}%>
                             </tr>
                         </tbody>
-                        <% } %>
+                            <% } %>
                         <tr>
                             <td colspan="2">
                                 <input class="btn btn-primary" type="submit" value="Evaluar" name="btnEvaluar" id="btnEv"/>  
                             </td>
                         </tr>
-                        <% }%>
-
+                <%}%>
                     </table>
                 </form>
-            
-                <a href="CerrarSesion">Cerrar Sesión</a>
             </div>
         </div>
     </body>
