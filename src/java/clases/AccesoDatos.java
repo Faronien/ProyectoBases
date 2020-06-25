@@ -11,8 +11,8 @@ import java.util.logging.Logger;
 public class AccesoDatos {
     
     // Constantes para establecer conexion
-    private static final String DRIVER = "com.mysql.jdbc.Driver";
-    private static final String URL_CONEXION = "jdbc:mysql://localhost:3306/dbprotocolo";
+    private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
+    private static final String URL_CONEXION = "jdbc:mysql://localhost:3306/dbprotocolo?serverTimezone=America/Mexico_City&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&useSSL=false";
     private static final String USUARIO = "root";
     private static final String PASSWORD = "root";
     private Connection con;

@@ -27,8 +27,7 @@ public class IniciarSesion extends HttpServlet {
             int iniciado = -1;
             int tipo = -1;
             // Creando procedimiento de la forma procedimiento = call registrar_alumno(usuario,pswd,boleta,nombre,correo)
-            String procedimiento = "call iniciar_sesion('" + usuario + "',"
-                    + "'" + pswd + "')";
+            String procedimiento = "call iniciar_sesion('" + usuario + "',"+ "'" + pswd + "')";
             
             // Ejecutando procedimiento
             try {
@@ -44,7 +43,7 @@ public class IniciarSesion extends HttpServlet {
                 }
                 
             } catch (SQLException ex) {
-                Logger.getLogger(RegistrarAlumno.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(IniciarSesion.class.getName()).log(Level.SEVERE, null, ex);
             }
             
             // Regresando a página de bienvenida si se logró iniciar sesión
