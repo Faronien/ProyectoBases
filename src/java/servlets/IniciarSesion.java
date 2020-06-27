@@ -1,6 +1,6 @@
 package servlets;
 
-import clases.AccesoDatos;
+import clases.AccesoDatosMariaDB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
@@ -27,11 +27,11 @@ public class IniciarSesion extends HttpServlet {
             int iniciado = -1;
             int tipo = -1;
             // Creando procedimiento de la forma procedimiento = call registrar_alumno(usuario,pswd,boleta,nombre,correo)
-            String procedimiento = "call iniciar_sesion('" + usuario + "',"+ "'" + pswd + "')";
+            String procedimiento = "iniciar_sesion('" + usuario + "',"+ "'" + pswd + "')";
             
             // Ejecutando procedimiento
             try {
-                AccesoDatos ad = new AccesoDatos();
+                AccesoDatosMariaDB ad = new AccesoDatosMariaDB();
                 ad.obtenerConexion();
                 ResultSet rs = ad.llamarProcedimiento(procedimiento);
                 while(rs.next()){
@@ -40,11 +40,11 @@ public class IniciarSesion extends HttpServlet {
                         usuarioBase = rs.getString("var_usuario");
                         tipo = rs.getInt("var_tipo");
                     }
-                }
-                
+                }   
             } catch (SQLException ex) {
                 Logger.getLogger(IniciarSesion.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
             
             // Regresando a página de bienvenida si se logró iniciar sesión
             

@@ -1,6 +1,6 @@
 package servlets;
 
-import clases.AccesoDatos;
+import clases.AccesoSincronizadoDatos;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -42,7 +42,7 @@ public class RegistrarProtocolo2 extends HttpServlet {
             String boleta = "";
             String clave = "";
             String mensaje = "";
-            AccesoDatos bd = new AccesoDatos();
+            AccesoSincronizadoDatos bd = new AccesoSincronizadoDatos();
 
             filePath = request.getRealPath("/") + "docs\\protocolos\\";
             isMultipart = ServletFileUpload.isMultipartContent(request);
@@ -111,20 +111,20 @@ public class RegistrarProtocolo2 extends HttpServlet {
                     bd.obtenerConexion();
 
                     ResultSet rs2 = null;
-                    rs2 = bd.llamarProcedimiento("call sp_getBoleta('" + (String) ses.getAttribute("usuario") + "')");
+                    rs2 = bd.llamarProcedimiento("sp_getBoleta('" + (String) ses.getAttribute("usuario") + "')");
                     while (rs2.next()) {
                         boleta = rs2.getString(1);
                     }
                     System.out.println("Boleta: " + boleta);
                     System.out.println((String) ses.getAttribute("usuario"));
-                    System.out.println("call sp_insertMyProt(" + boleta + ",'" + titulo + "','" + pdf + "')");
-                    ResultSet rs = bd.llamarProcedimiento("call sp_insertMyProt(" + boleta + ",'" + titulo + "','" + pdf + "')");
+                    System.out.println("sp_insertMyProt(" + boleta + ",'" + titulo + "','" + pdf + "')");
+                    ResultSet rs = bd.llamarProcedimiento("sp_insertMyProt(" + boleta + ",'" + titulo + "','" + pdf + "')");
 
                     while (rs.next()) {
                         if (rs.getString(1).equals("1")) {
                             clave = rs.getString(3);
                             for (int i = 0; i < palabras.length; i++) {
-                                rs = bd.llamarProcedimiento("call sp_regKeyW('" + clave + "','" + palabras[i] + "')");
+                                rs = bd.llamarProcedimiento("sp_regKeyW('" + clave + "','" + palabras[i] + "')");
                             }
                             out.println("1");
                             mensaje = "Se ha registrado el protocolo.";

@@ -1,6 +1,6 @@
 package servlets;
 
-import clases.AccesoDatos;
+import clases.AccesoAleatorioDatos;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,9 +36,9 @@ public class FiltroProtocolos implements Filter {
             try {
                 String usuario = (String) session.getAttribute("usuario");    
                 int valido = 0;
-                String procedimiento = "call ver_protocolos('" + usuario + "')";
+                String procedimiento = "ver_protocolos('" + usuario + "')";
                 System.out.println("Se intenta acceder a: "+request.getRequestURI().substring(15));
-                AccesoDatos ad = new AccesoDatos();
+                AccesoAleatorioDatos ad = new AccesoAleatorioDatos();
                 ad.obtenerConexion();
                 ResultSet rs = ad.llamarProcedimiento(procedimiento);
                 while(rs.next()){

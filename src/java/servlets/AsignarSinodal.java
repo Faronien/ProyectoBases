@@ -1,6 +1,6 @@
 package servlets;
 
-import clases.AccesoDatos;
+import clases.AccesoSincronizadoDatos;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
@@ -27,11 +27,11 @@ public class AsignarSinodal extends HttpServlet {
             String idProfesor = request.getParameter("idProfesor");
             String nreg = request.getParameter("nreg");
 
-            String procedimiento = "call asignar_sinodal('" + idProfesor + "',"+ "'" + nreg + "')";
+            String procedimiento = "asignar_sinodal('" + idProfesor + "',"+ "'" + nreg + "')";
             String msj = "";
             // Ejecutando procedimiento
             try {
-                AccesoDatos ad = new AccesoDatos();
+                AccesoSincronizadoDatos ad = new AccesoSincronizadoDatos();
                 ad.obtenerConexion();
                 ResultSet rs = ad.llamarProcedimiento(procedimiento);
                 if(rs.next()){

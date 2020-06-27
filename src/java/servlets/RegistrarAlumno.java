@@ -7,7 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import clases.AccesoDatos;
+import clases.AccesoSincronizadoDatos;
 import java.net.URLEncoder;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,7 +29,7 @@ public class RegistrarAlumno extends HttpServlet {
             String correo = request.getParameter("txtCorreo");
             int registrado = -1;
             // Creando procedimiento de la forma procedimiento = call registrar_alumno(usuario,pswd,boleta,nombre,correo)
-            String procedimiento = "call registrar_alumno('" + usuario + "',"
+            String procedimiento = "registrar_alumno('" + usuario + "',"
                     + "'" + pswd + "',"
                     + "'" + boleta + "',"
                     + "'" + nombre + "',"
@@ -37,7 +37,7 @@ public class RegistrarAlumno extends HttpServlet {
             
             // Ejecutando procedimiento
             try {
-                AccesoDatos ad = new AccesoDatos();
+                AccesoSincronizadoDatos ad = new AccesoSincronizadoDatos();
                 ad.obtenerConexion();
                 ResultSet rs = ad.llamarProcedimiento(procedimiento);
                 while(rs.next()){

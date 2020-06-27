@@ -7,7 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import clases.AccesoDatos;
+import clases.AccesoSincronizadoDatos;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -128,26 +128,21 @@ public class registrarProtocolo extends HttpServlet {
             String boleta = "";
             String clave = "";
             String mensaje = "";
-            AccesoDatos bd = new AccesoDatos();
+            AccesoSincronizadoDatos bd = new AccesoSincronizadoDatos();
             bd.obtenerConexion();
 
             ResultSet rs2 = null;
-            rs2 = bd.llamarProcedimiento("call sp_getBoleta('" + (String) ses.getAttribute("usuario") + "')");
+            rs2 = bd.llamarProcedimiento("sp_getBoleta('" + (String) ses.getAttribute("usuario") + "')");
             while (rs2.next()) {
                 boleta = rs2.getString(1);
             }
             System.out.println("Boleta: " + boleta);
             System.out.println((String) ses.getAttribute("usuario"));
-            System.out.println("call sp_insertMyProt(" + boleta + ",'" + titulo + "','" + pdf + "')");
-            ResultSet rs = bd.llamarProcedimiento("call sp_insertMyProt(" + boleta + ",'" + titulo + "','" + dir + "')");
+            System.out.println("sp_insertMyProt(" + boleta + ",'" + titulo + "','" + pdf + "')");
+            ResultSet rs = bd.llamarProcedimiento("sp_insertMyProt(" + boleta + ",'" + titulo + "','" + dir + "')");
 
             while (rs.next()) {
                 if (rs.getString(1).equals("1")) {
-//                    clave = rs.getString(3);
-//                    for (int j = 0; j < palabras.length; j++) {
-//                        System.out.println("call sp_regKeyW('" + palabras[j] + "','" + clave + "')");
-//                        rs = bd.llamarProcedimiento("call sp_regKeyW('" + clave + "','" + palabras[j] + "')");
-//                    }
                     out.println("1");
                     mensaje = "Se ha registrado el protocolo.";
 

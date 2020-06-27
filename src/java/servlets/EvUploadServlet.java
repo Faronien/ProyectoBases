@@ -7,7 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import clases.AccesoDatos;
+import clases.AccesoSincronizadoDatos;
 import java.sql.ResultSet;
 import javax.mail.Session;
 import javax.mail.Message;
@@ -113,12 +113,12 @@ public class EvUploadServlet extends HttpServlet {
                     }
                 }
             }
-            String procedimiento = "call contarEv()";
-            String procedimiento2 = "call getidProf('" + usuario + "')";
+            String procedimiento = "contarEv()";
+            String procedimiento2 = "getidProf('" + usuario + "')";
             int idEv = 0;
             String idProf = "";
             int evRegistrada = -1;
-            AccesoDatos ad = new AccesoDatos();
+            AccesoSincronizadoDatos ad = new AccesoSincronizadoDatos();
             ad.obtenerConexion();
             ResultSet rs = ad.llamarProcedimiento(procedimiento);
             while (rs.next()) {
@@ -130,12 +130,12 @@ public class EvUploadServlet extends HttpServlet {
             }
             String mail = "";
             out.println(dir);
-            String procedimiento4 = "call getMailAlum('" + num + "')";
+            String procedimiento4 = "getMailAlum('" + num + "')";
             ResultSet rs4 = ad.llamarProcedimiento(procedimiento4);
             while (rs4.next()) {
                 mail = rs4.getString("correo");
             }
-            String procedimiento3 = "call registrar_evaluacion('" + idEv + "',"
+            String procedimiento3 = "registrar_evaluacion('" + idEv + "',"
                     + "'" + idProf + "',"
                     + "'" + num + "',"
                     + "'" + resultado + "',"
