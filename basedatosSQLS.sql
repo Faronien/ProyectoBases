@@ -372,3 +372,18 @@ AS
         profesor p on p.id_profesor = pa.id_profesor 
     where 
         p.id_profesor = @idProfesor;
+
+CREATE PROCEDURE sinodales_protocolo @nreg varchar(10)
+AS
+    select p.id_profesor,p.nombre from profesor p inner join sinodal_protocolo sp on p.id_profesor = sp.id_profesor where sp.num_registro = @nreg;
+
+CREATE PROCEDURE existe_protocolo( @nreg varchar(10))
+AS
+    declare @msj varchar(30);
+    if ((select count(*) from protocolo where num_registro = nreg)>0) begin
+        set @msj = "Existente";
+    end
+    else begin
+        set @msj = "Inexistente";
+    end 
+    select msj;
