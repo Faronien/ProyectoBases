@@ -35,7 +35,6 @@ create table profesor(
     usuario nvarchar(30) not null,
     nombre nvarchar(50) not null,
     rol nvarchar(50) default 'normal',
-	foreign key(id_presidente) references profesor(id_profesor),
     foreign key(usuario) references usuario(usuario) on delete cascade on update cascade);
 
 create table sinodal_protocolo(
@@ -87,7 +86,6 @@ AS
         set @var_registrado = 0;
     END
     SELECT @var_registrado as var_registrado; 
-
 
 CREATE PROCEDURE iniciar_sesion @var_usuario NVARCHAR(30), @var_pswd NVARCHAR(30)
 AS
@@ -193,7 +191,7 @@ AS
         BEGIN
             if(@var_tipo = 2) -- Si el usuario es profesor, desplegar los protocolos que evaluara
             BEGIN
-                select @var_existe,protocolo.num_registro,protocolo.nombre,alumno.nombre,protocolo.dir_pdf from protocolo 
+                select @var_existe,protocolo.num_registro,protocolo.nombre,alumno.nombre as alumno,protocolo.dir_pdf from protocolo 
                     inner join alumno on protocolo.boleta=alumno.boleta
                     inner join sinodal_protocolo on protocolo.num_registro=sinodal_protocolo.num_registro
                     inner join profesor on sinodal_protocolo.id_profesor=profesor.id_profesor
@@ -276,7 +274,7 @@ AS
 	END
     else
     BEGIN
-		set @cuenta = (SELECT TOP 1 SUBSTRING(num_registro,7,4) as nums from protocolo order by nums desc);
+		set @cuenta = (SELECT TOP 1 SUBSTRING(num_registro,7,4) + 1 as nums from protocolo order by nums desc);
 		set @xnum = CONCAT('PROTTT',RIGHT('000'+CAST(@cuenta AS VARCHAR(4)),4));
 		insert into protocolo(num_registro,nombre,dir_pdf,boleta,ult_revision) values(@xnum,@xnombre,@xdir_pdf,@xboleta,GETDATE());
 		select 1 as stat, 'Registro exitoso' as msj,@xnum as num_reg;
@@ -362,6 +360,9 @@ CREATE PROCEDURE rol_profesor @idprof varchar (10)
 AS
     select rol from profesor where id_profesor = @idprof;
 
+create procedure profesores_academia( @idAcademia varchar (10))as
+    select p.id_profesor,p.nombre from profesor p inner join profesor_academia pa on p.id_profesor = pa.id_profesor inner join academia a on a.id_academia = pa.id_academia where a.id_academia = @idAcademia;
+
 CREATE PROCEDURE academia_profesor @idProfesor varchar (10)
 AS
     select a.id_academia,a.nombre 
@@ -380,20 +381,20 @@ AS
 CREATE PROCEDURE existe_protocolo( @nreg varchar(10))
 AS
     declare @msj varchar(30);
-    if ((select count(*) from protocolo where num_registro = nreg)>0) begin
-        set @msj = "Existente";
+    if ((select count(*) from protocolo where num_registro = @nreg)>0) begin
+        set @msj = 'Existente';
     end
     else begin
-        set @msj = "Inexistente";
+        set @msj = 'Inexistente';
     end 
-    select msj;
+    select @msj as msj;
 
 -- PARA PRUEBAS
 
 select * from protocolo;
 select * from palabra_clave;
-call iniciar_sesion('faronien','asdf');
-call registrar_alumno('faronien','asdf','2015090373','marcos','faronienm@gmail.com');
+exec iniciar_sesion @var_usuario = 'faronien', @var_pswd = 'asdf';
+exec registrar_alumno @var_usuario = 'faronien',@var_pswd ='asdf', @var_boleta = '2015090373', @var_nombre = 'marcos', @var_email = 'faronienm@gmail.com';
 insert into protocolo(num_registro,nombre,dir_pdf,boleta,ult_revision)values('PROTTT0001','PROTTT0001','docs/protocolos/pr1.pdf','2015090373','2020-02-24');
 
 insert into academia(id_academia,nombre)values(1,"Ciencias Básicas");

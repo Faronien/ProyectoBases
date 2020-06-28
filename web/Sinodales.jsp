@@ -1,11 +1,16 @@
 <%@page import="java.sql.ResultSet"%>
-<%@page import="clases.AccesoDatos"%>
+<%@page import="clases.AccesoAleatorioDatos"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
+        <title>Sinodales</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/css-proyectobases.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
     <body>
             <%
@@ -23,17 +28,37 @@
                     response.sendRedirect("InicioSesion.jsp");
                 }
                 
-                AccesoDatos ad = new AccesoDatos();
-                String procedimiento = "call getidProf('"+usuario+"')";;
+                AccesoAleatorioDatos ad = new AccesoAleatorioDatos();
+                String procedimiento = "getidProf('"+usuario+"')";;
                 ResultSet rs;
                 ad.obtenerConexion();
-                
-                if(tipo==2){
+            %>
+            <nav class="navbar navbar-dark ">
+            <div class="containers-fluid">
+                <ul class="nav navbar-nav mr-auto">
+                    
+                    <%if(tipo == 1) {%>
+                    <li><a class="navbar-element" href="VerProtocolos.jsp">Ver Protocolo</a></li>
+                    <li><a class="navbar-element" href="RegistroProtocolo.jsp">Registrar Protocolo</a></li>
+                    <li><a class="navbar-element" href="ConsultarEvaluacion.jsp">Consultar Evaluacion</a></li>
+                    <% } else if(tipo == 2){ %>
+                    <li><a class="navbar-element" href="VerProtocolos.jsp">Ver Protocolos</a></li>
+                    <% } %>
+                    <li><a class="navbar-element" href="CerrarSesion">Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="contenido">
+            <div class="titulo">
+                <h1>Sinodales</h1>
+            </div>
+            <div class="form-group">
+            <%  if(tipo==2){
                     rs = ad.llamarProcedimiento(procedimiento);
                     if(rs.next()){
                         idProfesor = rs.getInt("id_profesor");
                     }
-                    procedimiento = "call rol_profesor("+idProfesor+")";
+                    procedimiento = "rol_profesor("+idProfesor+")";
                     rs = ad.llamarProcedimiento(procedimiento);
                     if(rs.next()){
                         rolProfesor = rs.getString("rol");
@@ -44,16 +69,16 @@
                     response.sendRedirect("index.jsp");
                 }
                 
-                procedimiento = "call academia_profesor("+idProfesor+")";
+                procedimiento = "academia_profesor("+idProfesor+")";
                 String nombreAcademia = "";
                 int idAcademia = 0;
                 rs = ad.llamarProcedimiento(procedimiento);
                 if(rs.next()){
-                    nombreAcademia = rs.getString("a.nombre");
-                    idAcademia = rs.getInt("a.id_academia");
+                    nombreAcademia = rs.getString("nombre");
+                    idAcademia = rs.getInt("id_academia");
                 }
                 String nreg = request.getParameter("nreg");
-                procedimiento = "call existe_protocolo('"+nreg+"')";
+                procedimiento = "existe_protocolo('"+nreg+"')";
                 rs = ad.llamarProcedimiento(procedimiento);
                 String existeProtocolo = "";
                 if(rs.next()){
@@ -74,11 +99,11 @@
                 }
                 
             %>
-        <h1>Asignación de sinodales de la academia <%=nombreAcademia%> para el TT no. <%=nreg%></h1>
+        <h3>Asignación de sinodales de la academia <%=nombreAcademia%> para el TT no. <%=nreg%></h3>
         <%if(!msj.isEmpty()){%>
         <div id="divNotificacion"><%=msj%></div>
         <%}%>
-        <h2>Sinodales Asignados</h2>
+        <h4>Sinodales Asignados</h4>
         <table  class="table">
             <thead>
                 <tr>
@@ -88,28 +113,28 @@
             </thead>
             <tbody>
                 <%
-                    procedimiento = "call sinodales_protocolo('" + nreg + "')";
+                    procedimiento = "sinodales_protocolo('" + nreg + "')";
                     rs = ad.llamarProcedimiento(procedimiento);
                     while (rs.next()){
                 %>
                 <tr>
-                    <td><%=rs.getString("p.id_profesor")%></td>
-                    <td><%=rs.getString("p.nombre")%></td>
+                    <td><%=rs.getString("id_profesor")%></td>
+                    <td><%=rs.getString("nombre")%></td>
                 <% } %>
                 </tr>
             </tbody>
         </table>
-        <h2>Asignar Sinodales</h2>
+        <h4>Asignar Sinodales</h4>
         <form name="asignarSinodales" id="asignarSinodales" method="post" action="AsignarSinodal">
             <input type="hidden" value="<%=nreg%>" id="nreg" name="nreg" />
             <select name="idProfesor" id="idProfesor" required>
                 <option value="">Selecciona un profesor</option>
                 <%
-                    procedimiento = "call profesores_academia(" + idAcademia + ")";
+                    procedimiento = "profesores_academia(" + idAcademia + ")";
                     rs = ad.llamarProcedimiento(procedimiento);
                     while (rs.next()){
                 %>
-                <option value='<%=rs.getString("p.id_profesor")%>'><%=rs.getString("p.nombre")%></option>
+                <option value='<%=rs.getString("id_profesor")%>'><%=rs.getString("nombre")%></option>
                 <%}%>
             </select>
             <input class="btn btn-primary" type="submit" value="Asignar" name="btnAsignar" id="btnAsignar"/>  

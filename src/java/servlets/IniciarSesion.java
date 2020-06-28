@@ -1,6 +1,6 @@
 package servlets;
 
-import clases.AccesoDatosMariaDB;
+import clases.AccesoAleatorioDatos;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
@@ -31,7 +31,7 @@ public class IniciarSesion extends HttpServlet {
             
             // Ejecutando procedimiento
             try {
-                AccesoDatosMariaDB ad = new AccesoDatosMariaDB();
+                AccesoAleatorioDatos ad = new AccesoAleatorioDatos();
                 ad.obtenerConexion();
                 ResultSet rs = ad.llamarProcedimiento(procedimiento);
                 while(rs.next()){
@@ -63,8 +63,6 @@ public class IniciarSesion extends HttpServlet {
                 response.sendRedirect("InicioSesion.jsp?mensaje=" + mensaje);
             }
             
-            // Formateando para enviar en un mensaje con método Get
-            // mensaje = URLEncoder.encode(mensaje, "UTF-8");
             
         }
     }

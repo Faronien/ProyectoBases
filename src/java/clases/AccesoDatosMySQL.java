@@ -23,7 +23,6 @@ public class AccesoDatosMySQL extends PlantillaAccesoDatos {
             Class.forName(DRIVER);
             
             con = DriverManager.getConnection(URL_CONEXION, USUARIO, PASSWORD);
-            System.out.println("Llega");
             con.setAutoCommit(false);
         }
         catch(Exception e){

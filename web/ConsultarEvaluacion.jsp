@@ -1,10 +1,5 @@
-<%-- 
-    Document   : InicioSesion
-    Created on : 17/02/2020, 07:05:39 PM
-    Author     : USUARIO
---%>
 <%@page import="java.sql.ResultSet"%>
-<%@page import="clases.AccesoDatos"%>
+<%@page import="clases.AccesoAleatorioDatos"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -67,8 +62,8 @@
                     </thead>
                     <tbody>
                     <% 
-                        String procedimiento = "call ver_evaluaciones('"+usuario+"')";
-                        AccesoDatos ad = new AccesoDatos();
+                        String procedimiento = "ver_evaluaciones('"+usuario+"')";
+                        AccesoAleatorioDatos ad = new AccesoAleatorioDatos();
                         ad.obtenerConexion();
                         ResultSet rs = ad.llamarProcedimiento(procedimiento);
                         while(rs.next()){
@@ -93,8 +88,8 @@
                     </thead>
                     <tbody>
                     <% 
-                        String procedimiento = "call ver_evaluaciones('"+usuario+"')";
-                        AccesoDatos ad = new AccesoDatos();
+                        String procedimiento = "ver_evaluaciones('"+usuario+"')";
+                        AccesoAleatorioDatos ad = new AccesoAleatorioDatos();
                         ad.obtenerConexion();
                         ResultSet rs = ad.llamarProcedimiento(procedimiento);
                         while(rs.next()){

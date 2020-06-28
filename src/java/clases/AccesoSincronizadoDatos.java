@@ -1,7 +1,5 @@
 package clases;
 
-import java.lang.instrument.Instrumentation;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;

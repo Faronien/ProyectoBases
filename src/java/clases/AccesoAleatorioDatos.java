@@ -18,6 +18,7 @@ public class AccesoAleatorioDatos {
     public AccesoAleatorioDatos(){
         Random random = new Random();
         indice = random.nextInt(accesos.length);
+        System.out.println("" + indice);
     }
     
     public void obtenerConexion(){

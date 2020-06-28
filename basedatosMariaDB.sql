@@ -5,7 +5,6 @@
 -- García Valencia Jesús Alberto
 -- Grupo: 3CM9
 -- Asignatura: Distributed Data Base
-
 drop database if exists dbprotocolo;
 create database dbprotocolo;
 use dbprotocolo;
@@ -195,7 +194,7 @@ begin
                 #        where usuario.usuario=var_usuario;
             else
 				if(var_tipo = 2)then -- Si el usuario es profesor, desplegar los protocolos que evaluara
-					select var_existe,protocolo.num_registro,protocolo.nombre,alumno.nombre,protocolo.dir_pdf from protocolo 
+					select var_existe,protocolo.num_registro,protocolo.nombre,alumno.nombre as alumno,protocolo.dir_pdf from protocolo 
 						inner join alumno on protocolo.boleta=alumno.boleta
                         inner join sinodal_protocolo on protocolo.num_registro=sinodal_protocolo.num_registro
                         inner join profesor on sinodal_protocolo.id_profesor=profesor.id_profesor
@@ -217,7 +216,7 @@ drop procedure if exists ver_protocolo_eleg;
 delimiter **
 create procedure ver_protocolo_eleg(in num_reg nvarchar(10))
 begin
-	select num_registro,protocolo.nombre,dir_pdf,protocolo.boleta,ult_revision,alumno.nombre,alumno.correo from protocolo,alumno where num_reg=num_registro AND protocolo.boleta=alumno.boleta;
+	select num_registro,protocolo.nombre,dir_pdf,protocolo.boleta,ult_revision,alumno.nombre as alumno,alumno.correo from protocolo,alumno where num_reg=num_registro AND protocolo.boleta=alumno.boleta;
     -- IMPORTANTE: TODOS LOS PROCEDIMIENTOS DEBEN TERMINAR EN UN SELECT, PARA SU MANEJO GENERAL EN LA LÓGICA.
 end **
 delimiter ;
@@ -226,27 +225,27 @@ drop procedure if exists registrar_evaluacion;
 delimiter **
 create procedure registrar_evaluacion(in var_idevaluacion int(6),in var_idprofesor nvarchar(10),in var_num_registro nvarchar(10),in var_estatus nvarchar(15),in var_dirpdf nvarchar(100) )
 begin
-declare ev_registrada int;
-set ev_registrada=-1;
+	declare ev_registrada int;
+	set ev_registrada=-1;
 	insert into evaluacion(id_evaluacion,id_profesor,num_registro,estatus,dir_pdf) values (var_idevaluacion,var_idprofesor,var_num_registro,var_estatus,var_dirpdf);
     set ev_registrada=1;
     select ev_registrada as ev_registrada;
 end **
 delimiter ;
+
 drop procedure if exists getidProf;
 delimiter **
 create procedure getidProf(in usuario nvarchar(30))
 begin
-select id_profesor from profesor where usuario=profesor.usuario;
+	select id_profesor from profesor where usuario=profesor.usuario;
 end **
 delimiter ;
-
 
 drop procedure if exists getMailAlum;
 delimiter **
 create procedure getMailAlum(in var_idevaluacion nvarchar(10))
 begin
-select correo from alumno, protocolo where protocolo.boleta=alumno.boleta and var_idevaluacion=num_registro;
+	select correo from alumno, protocolo where protocolo.boleta=alumno.boleta and var_idevaluacion=num_registro;
 end **
 delimiter ;
 
@@ -257,7 +256,6 @@ begin
 	select count(id_evaluacion)+1 as sigID from evaluacion;
 end **
 delimiter ;
-
 
 drop procedure if exists sp_getMyProt;
 delimiter **
@@ -340,7 +338,6 @@ begin
 end**
 delimiter ;
 
-select * from protocolo;
 -- Consulta la boleta
 drop procedure if exists sp_getBoleta;
 delimiter **
@@ -374,22 +371,22 @@ delimiter ;
 delimiter **
 create procedure asignar_sinodal(in idprof varchar (10),in nreg varchar(10))
 begin
-declare msj nvarchar(50);
-if ((select count(*) from sinodal_protocolo where id_profesor = idprof) < 3) then  -- Si hay un profesor como sinodal en menos de 3 protocolos
-	if((select count(*) from sinodal_protocolo where num_registro = nreg) < 3) then -- Si hay menos de 3 sinodales en el protocolo
-		if((select count(*) from sinodal_protocolo where id_profesor = idprof and num_registro = nreg) < 1) then -- Si el profesor no ha sido asignado a ese protocolo
-			insert into sinodal_protocolo(id_profesor,num_registro)values(idprof,nreg);
-            set msj = 'Asignado';
+	declare msj nvarchar(50);
+	if ((select count(*) from sinodal_protocolo where id_profesor = idprof) < 3) then  -- Si hay un profesor como sinodal en menos de 3 protocolos
+		if((select count(*) from sinodal_protocolo where num_registro = nreg) < 3) then -- Si hay menos de 3 sinodales en el protocolo
+			if((select count(*) from sinodal_protocolo where id_profesor = idprof and num_registro = nreg) < 1) then -- Si el profesor no ha sido asignado a ese protocolo
+				insert into sinodal_protocolo(id_profesor,num_registro)values(idprof,nreg);
+				set msj = 'Asignado';
+			else
+				set msj = 'c1'; -- Profesor ya asignado a ese protocolo
+			end if;
 		else
-			set msj = 'c1'; -- Profesor ya asignado a ese protocolo
+			set msj = 'c2'; -- Protocolo ya con 3 sinodales
 		end if;
-    else
-		set msj = 'c2'; -- Protocolo ya con 3 sinodales
+	else
+		set msj = 'c3'; -- Profesor ya con 3 protocolos
 	end if;
-else
-	set msj = 'c3'; -- Profesor ya con 3 protocolos
-end if;
-	select msj;
+		select msj;
 end **
 delimiter ; 
 

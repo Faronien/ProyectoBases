@@ -5,7 +5,7 @@
 --%>
 <%@page import="org.apache.catalina.tribes.util.Arrays"%>
 <%@page import="java.sql.ResultSet"%>
-<%@page import="clases.AccesoDatos"%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>

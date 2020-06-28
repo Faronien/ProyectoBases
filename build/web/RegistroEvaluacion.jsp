@@ -1,11 +1,6 @@
-<%-- 
-    Document   : VerProtocolos
-    Created on : 17/02/2020, 07:05:39 PM
-    Author     : USUARIO
---%>
 <%@page import="org.apache.catalina.tribes.util.Arrays"%>
 <%@page import="java.sql.ResultSet"%>
-<%@page import="clases.AccesoDatos"%>
+<%@page import="clases.AccesoAleatorioDatos"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -73,8 +68,8 @@
                         <tbody>
                             <%
                                 
-                                String procedimiento = "call ver_protocolo_eleg('" + stringRadio + "')";
-                                AccesoDatos ad = new AccesoDatos();
+                                String procedimiento = "ver_protocolo_eleg('" + stringRadio + "')";
+                                AccesoAleatorioDatos ad = new AccesoAleatorioDatos();
                                 ad.obtenerConexion();
                                 String num_registro = "";
                                 String nombreAl = "";
@@ -83,9 +78,9 @@
                                 ResultSet rs = ad.llamarProcedimiento(procedimiento);
                                 while (rs.next()) {
                                     num_registro = rs.getString("num_registro");
-                                    nombreAl = rs.getString("alumno.nombre");
-                                    dirpdf = rs.getString("protocolo.dir_pdf");
-                                    nombrePr = rs.getString("protocolo.nombre");
+                                    nombreAl = rs.getString("alumno");
+                                    dirpdf = rs.getString("dir_pdf");
+                                    nombrePr = rs.getString("nombre");
                                 }
                             %>
                             <tr>

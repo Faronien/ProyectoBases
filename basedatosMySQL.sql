@@ -195,7 +195,7 @@ begin
                 #        where usuario.usuario=var_usuario;
             else
 				if(var_tipo = 2)then -- Si el usuario es profesor, desplegar los protocolos que evaluara
-					select var_existe,protocolo.num_registro,protocolo.nombre,alumno.nombre,protocolo.dir_pdf from protocolo 
+					select var_existe,protocolo.num_registro,protocolo.nombre,alumno.nombre as alumno,protocolo.dir_pdf from protocolo 
 						inner join alumno on protocolo.boleta=alumno.boleta
                         inner join sinodal_protocolo on protocolo.num_registro=sinodal_protocolo.num_registro
                         inner join profesor on sinodal_protocolo.id_profesor=profesor.id_profesor
@@ -217,7 +217,7 @@ drop procedure if exists ver_protocolo_eleg;
 delimiter **
 create procedure ver_protocolo_eleg(in num_reg nvarchar(10))
 begin
-	select num_registro,protocolo.nombre,dir_pdf,protocolo.boleta,ult_revision,alumno.nombre,alumno.correo from protocolo,alumno where num_reg=num_registro AND protocolo.boleta=alumno.boleta;
+	select num_registro,protocolo.nombre,dir_pdf,protocolo.boleta,ult_revision,alumno.nombre as alumno,alumno.correo from protocolo,alumno where num_reg=num_registro AND protocolo.boleta=alumno.boleta;
     -- IMPORTANTE: TODOS LOS PROCEDIMIENTOS DEBEN TERMINAR EN UN SELECT, PARA SU MANEJO GENERAL EN LA LÓGICA.
 end **
 delimiter ;

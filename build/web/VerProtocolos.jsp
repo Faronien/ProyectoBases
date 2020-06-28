@@ -1,5 +1,5 @@
 <%@page import="java.sql.ResultSet"%>
-<%@page import="clases.AccesoDatos"%>
+<%@page import="clases.AccesoAleatorioDatos"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -29,7 +29,7 @@
                     else{
                         response.sendRedirect("InicioSesion.jsp");
                     }
-                    AccesoDatos ad = new AccesoDatos();
+                    AccesoAleatorioDatos ad = new AccesoAleatorioDatos();
                     String procedimiento;
                     ResultSet rs;
                     ad.obtenerConexion();
@@ -58,7 +58,7 @@
                 <% if(tipo==1){ %>    
                     
                     <% 
-                        procedimiento = "call ver_protocolos('"+usuario+"')";
+                        procedimiento = "ver_protocolos('"+usuario+"')";
                         System.out.println(usuario);
                         String ligaProtocolo = "";
                         String nombreProtocolo = "";
@@ -84,13 +84,13 @@
                 <% }else %>
 
                 <% if(tipo==2){
-                    procedimiento = "call getidProf('"+usuario+"')";
+                    procedimiento = "getidProf('"+usuario+"')";
                     rs = ad.llamarProcedimiento(procedimiento);
                     int idProfesor = 0;
                     if(rs.next()){
                         idProfesor = rs.getInt("id_profesor");
                     }
-                    procedimiento = "call rol_profesor("+idProfesor+")";
+                    procedimiento = "rol_profesor("+idProfesor+")";
                     rs = ad.llamarProcedimiento(procedimiento);
                     String rolProfesor = "";
                     if(rs.next()){
@@ -112,17 +112,17 @@
                         </thead>
                         <tbody>
                             <%
-                                procedimiento = "call ver_protocolos('" + usuario + "')";
+                                procedimiento = "ver_protocolos('" + usuario + "')";
                                 rs = ad.llamarProcedimiento(procedimiento);
                                 while (rs.next()) {
                             %>
                             <tr>
-                                <td><input type="radio" name="rdprotocolo" value='<%=rs.getString("protocolo.num_registro")%>'></td>
-                                <td><%=rs.getString("protocolo.num_registro")%></td>
-                                <td><%=rs.getString("alumno.nombre")%></td>
-                                <td><a href='<%=rs.getString("protocolo.dir_pdf")%>'><%=rs.getString("protocolo.nombre")%></a></td>
+                                <td><input type="radio" name="rdprotocolo" value='<%=rs.getString("num_registro")%>'></td>
+                                <td><%=rs.getString("num_registro")%></td>
+                                <td><%=rs.getString("alumno")%></td>
+                                <td><a href='<%=rs.getString("dir_pdf")%>'><%=rs.getString("nombre")%></a></td>
                                 <%if(rolProfesor.equals("presidente")){%>
-                                <td><a href='Sinodales.jsp?nreg=<%=rs.getString("protocolo.num_registro")%>'>Ver Sinodales</td>
+                                <td><a href='Sinodales.jsp?nreg=<%=rs.getString("num_registro")%>'>Ver Sinodales</td>
                                 <%}%>
                             </tr>
                         </tbody>

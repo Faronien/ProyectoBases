@@ -10,11 +10,9 @@ import java.util.logging.Logger;
 
 public class AccesoDatosSQLServer extends PlantillaAccesoDatos {
     
-    // Constantes para establecer conexion
+
     private static final String DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    private static final String URL_CONEXION = "jdbc:sqlserver://127.0.0.1\\MSSQLServer;databaseName=dbprotocolo;user=sa;password=root";
-//    private static final String USUARIO = "root";
-//    private static final String PASSWORD = "root";
+    private static final String URL_CONEXION = "jdbc:sqlserver://localhost\\MSSQLServer;databaseName=dbprotocolo;user=sa;password=root";
     private Connection con;
     
     public void obtenerConexion(){
