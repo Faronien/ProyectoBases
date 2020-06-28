@@ -226,27 +226,27 @@ drop procedure if exists registrar_evaluacion;
 delimiter **
 create procedure registrar_evaluacion(in var_idevaluacion int(6),in var_idprofesor nvarchar(10),in var_num_registro nvarchar(10),in var_estatus nvarchar(15),in var_dirpdf nvarchar(100) )
 begin
-declare ev_registrada int;
-set ev_registrada=-1;
+	declare ev_registrada int;
+	set ev_registrada=-1;
 	insert into evaluacion(id_evaluacion,id_profesor,num_registro,estatus,dir_pdf) values (var_idevaluacion,var_idprofesor,var_num_registro,var_estatus,var_dirpdf);
     set ev_registrada=1;
     select ev_registrada as ev_registrada;
 end **
 delimiter ;
+
 drop procedure if exists getidProf;
 delimiter **
 create procedure getidProf(in usuario nvarchar(30))
 begin
-select id_profesor from profesor where usuario=profesor.usuario;
+	select id_profesor from profesor where usuario=profesor.usuario;
 end **
 delimiter ;
-
 
 drop procedure if exists getMailAlum;
 delimiter **
 create procedure getMailAlum(in var_idevaluacion nvarchar(10))
 begin
-select correo from alumno, protocolo where protocolo.boleta=alumno.boleta and var_idevaluacion=num_registro;
+	select correo from alumno, protocolo where protocolo.boleta=alumno.boleta and var_idevaluacion=num_registro;
 end **
 delimiter ;
 
@@ -257,7 +257,6 @@ begin
 	select count(id_evaluacion)+1 as sigID from evaluacion;
 end **
 delimiter ;
-
 
 drop procedure if exists sp_getMyProt;
 delimiter **
