@@ -1,3 +1,10 @@
+-- Alumnos:
+-- Cruz Macías Ricardo Iván
+-- López Hernández Marcos Daniel
+-- Rojas Fernández Rafael
+-- García Valencia Jesús Alberto
+-- Grupo: 3CM9
+-- Asignatura: Distributed Data Base
 create table usuario(
 	usuario nvarchar(30) not null primary key,
 	pswd nvarchar(30) not null,
@@ -212,7 +219,7 @@ AS
 
 CREATE PROCEDURE ver_protocolo_eleg @num_reg nvarchar(10)
 AS
-    select num_registro,protocolo.nombre,dir_pdf,protocolo.boleta,ult_revision,alumno.nombre,alumno.correo 
+    select num_registro,protocolo.nombre,dir_pdf,protocolo.boleta,ult_revision,alumno.nombre as alumno,alumno.correo 
     from protocolo,alumno 
     where 
         @num_reg=num_registro AND protocolo.boleta=alumno.boleta;
@@ -421,31 +428,31 @@ insert into usuario(usuario,pswd,tipo)values('prof5','prof5',2);
 insert into profesor(id_profesor,usuario,nombre)values('5','prof5','César Frias');
 insert into profesor_academia(id_academia,id_profesor)values('1','5');
 
-call asignar_sinodal('1','PROTTT0001');
-call asignar_sinodal('2','PROTTT0001');
-call asignar_sinodal('3','PROTTT0001');
+exec asignar_sinodal @idprof = '1', @nreg = 'PROTTT0001';
+exec asignar_sinodal @idprof = '2', @nreg = 'PROTTT0001';
+exec asignar_sinodal @idprof = '3', @nreg = 'PROTTT0001';
 
 insert into evaluacion(id_evaluacion,id_profesor,num_registro,estatus,dir_pdf)values(1,1,'PROTTT0001','ACEPTADA','docs/evaluaciones/ev1.pdf');
 insert into evaluacion(id_evaluacion,id_profesor,num_registro,estatus,dir_pdf)values(2,2,'PROTTT0001','ACEPTADA','docs/evaluaciones/ev2.pdf');
 insert into evaluacion(id_evaluacion,id_profesor,num_registro,estatus,dir_pdf)values(3,3,'PROTTT0001','RECHAZADA','docs/evaluaciones/ev3.pdf');
 
-call ver_evaluaciones('faronien');
-call ver_evaluaciones('prof1');
+exec ver_evaluaciones @var_usuario = 'faronien';
+exec ver_evaluaciones @var_usuario = 'prof1';
 
-call ver_protocolos('faronien');
-call ver_protocolos('prof1');
-call ver_protocolo_eleg(1);
-call getidProf('prof1');
-call getMailAlum('2');
-call registrar_evaluacion('4','1','PROTTT0001','RECHAZADO','/docs/');
+exec ver_protocolos @var_usuario = 'faronien';
+exec ver_protocolos @var_usuario = 'prof1';
+exec ver_protocolo_eleg @num_reg 1;
+exec getidProf @usuario = 'prof1';
+exec getMailAlum @var_idevaluacion = '2';
+exec registrar_evaluacion @var_idevaluacion = '4',@var_idprofesor = '1',@var_num_registro = 'PROTTT0001',@var_estatus = 'RECHAZADO',@var_dirpdf = '/docs/';
 
 SELECT * from alumno;
 --update protocolo set num_registro = 'PROTTT001';
 select * from protocolo;
 --insert into protocolo(num_registro,nombre,dir_pdf,boleta,ult_revision)values('PROTTT0002','protocolo 2','docs/protocolos/pr2.pdf',2015090373,'2020-03-03');
 
-call sp_getBoleta('faronien');
---call sp_insertMyProt(2015090373,'titulo','dir');
+exec sp_getBoleta @xnombre = 'faronien';
+-- exec sp_insertMyProt @xboleta = 2015090373,@xnombre = 'titulo',@xdir = 'dir';
 select * from alumno;
 
 select * from profesor;
