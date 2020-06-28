@@ -316,7 +316,7 @@ AS
     where 
         a.usuario = u.usuario and u.usuario = @xnombre;
 
---Este probarlo con más cuidado
+
 CREATE PROCEDURE sp_canUpdate @xnum nvarchar(10)
 AS
     declare @exs int;

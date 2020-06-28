@@ -187,12 +187,6 @@ begin
 						inner join alumno on protocolo.boleta=alumno.boleta
                         inner join usuario on alumno.usuario=usuario.usuario
                         where usuario.usuario=var_usuario;
-				#select var_existe,protocolo.num_registro,protocolo.nombre,protocolo.dir_pdf,profesor.nombre from protocolo
-				#		inner join alumno on protocolo.boleta=alumno.boleta
-                #        inner join sinodal_protocolo on protocolo.num_registro=sinodal_protocolo.num_registro
-                #        inner join profesor on sinodal_protocolo.id_profesor=profesor.id_profesor
-                #        inner join usuario on alumno.usuario=usuario.usuario
-                #        where usuario.usuario=var_usuario;
             else
 				if(var_tipo = 2)then -- Si el usuario es profesor, desplegar los protocolos que evaluara
 					select var_existe,protocolo.num_registro,protocolo.nombre,alumno.nombre as alumno,protocolo.dir_pdf from protocolo 
