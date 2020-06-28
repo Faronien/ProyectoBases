@@ -34,7 +34,7 @@ create table profesor(
 	id_profesor nvarchar(10) not null primary key,
     usuario nvarchar(30) not null,
     nombre nvarchar(50) not null,
-    id_presidente nvarchar(10) not null,
+    rol nvarchar(50) default 'normal',
 	foreign key(id_presidente) references profesor(id_profesor),
     foreign key(usuario) references usuario(usuario) on delete cascade on update cascade);
 
@@ -281,3 +281,94 @@ AS
 		insert into protocolo(num_registro,nombre,dir_pdf,boleta,ult_revision) values(@xnum,@xnombre,@xdir_pdf,@xboleta,GETDATE());
 		select 1 as stat, 'Registro exitoso' as msj,@xnum as num_reg;
 	END
+
+CREATE PROCEDURE sp_updateReg @xnum nvarchar(10), @xnew_pdf nvarchar(50)
+AS
+    update protocolo set dir_pdf = @xnew_pdf WHERE num_registro = @xnum;
+    select 1 as stat,'Correcion realizada' as msj;
+
+CREATE PROCEDURE sp_regKeyW @palabra nvarchar(15), @xnum nvarchar(10)
+AS
+    declare @idp int;
+    declare @exs int;
+    set @exs = (select count(*) from palabra_clave where palabra_clave = @palabra);
+    if @exs = 0
+    BEGIN
+		set @idp = (select ISNULL(max(id_palabra_clave),0)+1 from palabra_clave);
+        insert into palabra_clave values (@idp,@palabra);
+	END
+    else
+    BEGIN
+		set @idp = (select id_palabra_clave from palabra_clave where palabra_clave = @palabra);
+	END
+	insert into protocolo_palabra_clave values (@xnum,@idp);
+    select 1 as estat, 'Palabra registrada y asociada' as msj;
+
+CREATE PROCEDURE sp_getBoleta @xnombre nvarchar(50)
+AS
+    select a.boleta 
+    from alumno a, usuario u 
+    where 
+        a.usuario = u.usuario and u.usuario = @xnombre;
+
+--Este probarlo con más cuidado
+CREATE PROCEDURE sp_canUpdate @xnum nvarchar(10)
+AS
+    declare @exs int;
+    set @exs = (select count(*) from protocolo where num_registro = @xnum);
+    if @exs = 1
+    BEGIN
+		select CAST(
+            CASE
+                WHEN estatus='RECHAZADO'
+                    THEN 1
+                ELSE 2
+        END AS int) as stat from evaluacion where num_registro = @xnum;
+	END
+    else
+    BEGIN
+		select 0 as stat;
+    END
+
+CREATE PROCEDURE asignar_sinodal @idprof varchar (10), @nreg varchar(10)
+AS
+    declare @msj nvarchar(50);
+	if ((select count(*) from sinodal_protocolo where id_profesor = @idprof) < 3)   -- Si hay un profesor como sinodal en menos de 3 protocolos
+	BEGIN	
+        if((select count(*) from sinodal_protocolo where num_registro = @nreg) < 3)  -- Si hay menos de 3 sinodales en el protocolo
+		BEGIN	
+            if((select count(*) from sinodal_protocolo where id_profesor = @idprof and num_registro = @nreg) < 1)  -- Si el profesor no ha sido asignado a ese protocolo
+			BEGIN
+            	insert into sinodal_protocolo(id_profesor,num_registro)values(@idprof,@nreg);
+				set @msj = 'Asignado';
+			END
+            else
+            BEGIN
+				set @msj = 'c1'; -- Profesor ya asignado a ese protocolo
+			END
+        END
+		else
+        BEGIN
+			set @msj = 'c2'; -- Protocolo ya con 3 sinodales
+		END
+    END
+	else
+    BEGIN
+		set @msj = 'c3'; -- Profesor ya con 3 protocolos
+	END
+		select @msj;
+
+CREATE PROCEDURE rol_profesor @idprof varchar (10)
+AS
+    select rol from profesor where id_profesor = @idprof;
+
+CREATE PROCEDURE academia_profesor @idProfesor varchar (10)
+AS
+    select a.id_academia,a.nombre 
+    from academia a 
+    inner join 
+        profesor_academia pa on a.id_academia = pa.id_academia 
+    inner join 
+        profesor p on p.id_profesor = pa.id_profesor 
+    where 
+        p.id_profesor = @idProfesor;

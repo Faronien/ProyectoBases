@@ -339,7 +339,6 @@ begin
 end**
 delimiter ;
 
-select * from protocolo;
 -- Consulta la boleta
 drop procedure if exists sp_getBoleta;
 delimiter **
@@ -373,22 +372,22 @@ delimiter ;
 delimiter **
 create procedure asignar_sinodal(in idprof varchar (10),in nreg varchar(10))
 begin
-declare msj nvarchar(50);
-if ((select count(*) from sinodal_protocolo where id_profesor = idprof) < 3) then  -- Si hay un profesor como sinodal en menos de 3 protocolos
-	if((select count(*) from sinodal_protocolo where num_registro = nreg) < 3) then -- Si hay menos de 3 sinodales en el protocolo
-		if((select count(*) from sinodal_protocolo where id_profesor = idprof and num_registro = nreg) < 1) then -- Si el profesor no ha sido asignado a ese protocolo
-			insert into sinodal_protocolo(id_profesor,num_registro)values(idprof,nreg);
-            set msj = 'Asignado';
+	declare msj nvarchar(50);
+	if ((select count(*) from sinodal_protocolo where id_profesor = idprof) < 3) then  -- Si hay un profesor como sinodal en menos de 3 protocolos
+		if((select count(*) from sinodal_protocolo where num_registro = nreg) < 3) then -- Si hay menos de 3 sinodales en el protocolo
+			if((select count(*) from sinodal_protocolo where id_profesor = idprof and num_registro = nreg) < 1) then -- Si el profesor no ha sido asignado a ese protocolo
+				insert into sinodal_protocolo(id_profesor,num_registro)values(idprof,nreg);
+				set msj = 'Asignado';
+			else
+				set msj = 'c1'; -- Profesor ya asignado a ese protocolo
+			end if;
 		else
-			set msj = 'c1'; -- Profesor ya asignado a ese protocolo
+			set msj = 'c2'; -- Protocolo ya con 3 sinodales
 		end if;
-    else
-		set msj = 'c2'; -- Protocolo ya con 3 sinodales
+	else
+		set msj = 'c3'; -- Profesor ya con 3 protocolos
 	end if;
-else
-	set msj = 'c3'; -- Profesor ya con 3 protocolos
-end if;
-	select msj;
+		select msj;
 end **
 delimiter ; 
 
