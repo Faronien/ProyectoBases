@@ -387,3 +387,64 @@ AS
         set @msj = "Inexistente";
     end 
     select msj;
+
+-- PARA PRUEBAS
+
+select * from protocolo;
+select * from palabra_clave;
+call iniciar_sesion('faronien','asdf');
+call registrar_alumno('faronien','asdf','2015090373','marcos','faronienm@gmail.com');
+insert into protocolo(num_registro,nombre,dir_pdf,boleta,ult_revision)values('PROTTT0001','PROTTT0001','docs/protocolos/pr1.pdf','2015090373','2020-02-24');
+
+insert into academia(id_academia,nombre)values(1,"Ciencias Básicas");
+insert into academia(id_academia,nombre)values(2,"Ciencias Sociales");
+insert into academia(id_academia,nombre)values(3,"Ingenieria");
+
+insert into usuario(usuario,pswd,tipo)values('prof1','prof1',2);
+insert into profesor(id_profesor,usuario,nombre,rol)values(1,'prof1','Hernan Martinez','presidente');
+insert into profesor_academia(id_academia,id_profesor)values('1','1');
+
+insert into usuario(usuario,pswd,tipo)values('prof2','prof2',2);
+insert into profesor(id_profesor,usuario,nombre)values(2,'prof2','Juan Perez');
+insert into profesor_academia(id_academia,id_profesor)values('2','2');
+
+insert into usuario(usuario,pswd,tipo)values('prof3','prof3',2);
+insert into profesor(id_profesor,usuario,nombre)values('3','prof3','Adriana Hernandez');
+insert into profesor_academia(id_academia,id_profesor)values('3','3');
+
+insert into usuario(usuario,pswd,tipo)values('prof4','prof4',2);
+insert into profesor(id_profesor,usuario,nombre)values('4','prof4','Edgar Carranza');
+insert into profesor_academia(id_academia,id_profesor)values('1','4');
+
+insert into usuario(usuario,pswd,tipo)values('prof5','prof5',2);
+insert into profesor(id_profesor,usuario,nombre)values('5','prof5','César Frias');
+insert into profesor_academia(id_academia,id_profesor)values('1','5');
+
+call asignar_sinodal('1','PROTTT0001');
+call asignar_sinodal('2','PROTTT0001');
+call asignar_sinodal('3','PROTTT0001');
+
+insert into evaluacion(id_evaluacion,id_profesor,num_registro,estatus,dir_pdf)values(1,1,'PROTTT0001','ACEPTADA','docs/evaluaciones/ev1.pdf');
+insert into evaluacion(id_evaluacion,id_profesor,num_registro,estatus,dir_pdf)values(2,2,'PROTTT0001','ACEPTADA','docs/evaluaciones/ev2.pdf');
+insert into evaluacion(id_evaluacion,id_profesor,num_registro,estatus,dir_pdf)values(3,3,'PROTTT0001','RECHAZADA','docs/evaluaciones/ev3.pdf');
+
+call ver_evaluaciones('faronien');
+call ver_evaluaciones('prof1');
+
+call ver_protocolos('faronien');
+call ver_protocolos('prof1');
+call ver_protocolo_eleg(1);
+call getidProf('prof1');
+call getMailAlum('2');
+call registrar_evaluacion('4','1','PROTTT0001','RECHAZADO','/docs/');
+
+SELECT * from alumno;
+--update protocolo set num_registro = 'PROTTT001';
+select * from protocolo;
+--insert into protocolo(num_registro,nombre,dir_pdf,boleta,ult_revision)values('PROTTT0002','protocolo 2','docs/protocolos/pr2.pdf',2015090373,'2020-03-03');
+
+call sp_getBoleta('faronien');
+--call sp_insertMyProt(2015090373,'titulo','dir');
+select * from alumno;
+
+select * from profesor;
